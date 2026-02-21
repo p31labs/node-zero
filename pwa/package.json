@@ -1,0 +1,11 @@
+{
+  "name": "p31-pwa-icons",
+  "private": true,
+  "description": "Generate PWA icons from SVG (run from pwa/icons)",
+  "scripts": {
+    "icons": "node icons/generate-icons.js"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.5"
+  }
+}

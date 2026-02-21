@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" width="120" height="140">
+  <rect width="120" height="140" fill="#000"/>
+  <!-- Tetrahedron: solid front edges, dashed back -->
+  <g stroke="#31ffa3" stroke-width="1.5" fill="none">
+    <line x1="60" y1="18" x2="18" y2="90"/>
+    <line x1="60" y1="18" x2="102" y2="90"/>
+    <line x1="18" y1="90" x2="102" y2="90"/>
+    <line x1="60" y1="18" x2="60" y2="72" stroke-dasharray="4,4"/>
+    <line x1="18" y1="90" x2="60" y2="72" stroke-dasharray="4,4"/>
+    <line x1="102" y1="90" x2="60" y2="72" stroke-dasharray="4,4"/>
+  </g>
+  <g fill="#31ffa3">
+    <circle cx="60" cy="18" r="3"/>
+    <circle cx="18" cy="90" r="3"/>
+    <circle cx="102" cy="90" r="3"/>
+    <circle cx="60" cy="72" r="3"/>
+  </g>
+  <text x="60" y="118" text-anchor="middle" fill="#31ffa3" font-family="system-ui, sans-serif" font-size="14" font-weight="500" letter-spacing="2">P 3 1</text>
+</svg>
