@@ -1,0 +1,53 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  background: #000;
+  color: #e2e8f0;
+  font-family: 'Source Serif 4', Georgia, serif;
+  overflow-x: hidden;
+}
+@keyframes glow { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+@keyframes slideup { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.edge { stroke: #31ffa3; stroke-width: 1.5; animation: glow 3s ease-in-out infinite; }
+.vtx { fill: #31ffa3; }
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: #000; border-bottom: 1px solid #111;
+  display: flex; padding: 0 16px; font-family: 'DM Mono', monospace;
+}
+.tab {
+  padding: 14px 16px; font-size: 11px; letter-spacing: 2px; color: #555;
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.tab.on { color: #31ffa3; border-bottom-color: #31ffa3; }
+.tab:hover { color: #888; }
+.nr { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.ns { font-size: 10px; color: #333; letter-spacing: 1px; }
+.ns.on { color: #31ffa360; }
+.main { padding-top: 48px; min-height: 100vh; }
+.card {
+  padding: 16px 20px; background: #0d1117; border: 1px solid #1a1a2e;
+  border-radius: 8px; margin-bottom: 16px;
+}
+.label { font-family: 'DM Mono', monospace; font-size: 10px; color: #555; letter-spacing: 2px; margin-bottom: 8px; }
+.mono { font-family: 'DM Mono', monospace; }
+a.link {
+  display: block; padding: 6px 0; font-family: 'DM Mono', monospace; font-size: 12px;
+  color: #31ffa380; text-decoration: none; border-bottom: 1px solid #111;
+}
+a.link:hover { color: #31ffa3; }
+.ib {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;
+  background: #0d1117; border-top: 1px solid #31ffa330; padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: 'DM Mono', monospace; font-size: 13px;
+  transform: translateY(100%); transition: transform 0.3s ease;
+}
+.ib.vis { transform: translateY(0); }
+.ib button {
+  padding: 8px 20px; background: #31ffa320; border: 1px solid #31ffa340;
+  border-radius: 6px; color: #31ffa3; font-family: inherit; font-size: 12px;
+  cursor: pointer; letter-spacing: 1px;
+}
+.ib .x { background: none; border: none; color: #555; padding: 8px; cursor: pointer; font-size: 16px; margin-left: 12px; }
