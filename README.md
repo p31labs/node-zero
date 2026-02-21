@@ -1,112 +1,110 @@
-# @p31/node-zero
+# Phosphorus-31
 
-**The identity, bond, and vault protocol for P31 assistive technology.**
+**Open-source assistive technology for neurodivergent minds.**
 
-Node Zero is a TypeScript implementation of a peer-to-peer protocol designed for neurodivergent individuals. It provides cryptographic identity, encrypted data storage, and care-based relationship tracking — all running in the browser with zero runtime dependencies.
+Three packages. 439 tests. Zero runtime dependencies. One live app.
 
-Built by [P31 Labs](https://phosphorus31.org), a Georgia 501(c)(3) nonprofit developing open-source assistive technology.
+[![Live App](https://img.shields.io/badge/app-node--zero.pages.dev-31ffa3?style=flat-square)](https://node-zero.pages.dev)
+[![npm node-zero](https://img.shields.io/npm/v/@p31/node-zero?label=%40p31%2Fnode-zero&style=flat-square)](https://www.npmjs.com/package/@p31/node-zero)
+[![npm love-ledger](https://img.shields.io/npm/v/@p31/love-ledger?label=%40p31%2Flove-ledger&style=flat-square)](https://www.npmjs.com/package/@p31/love-ledger)
+[![npm game-engine](https://img.shields.io/npm/v/@p31/game-engine?label=%40p31%2Fgame-engine&style=flat-square)](https://www.npmjs.com/package/@p31/game-engine)
 
-## Install
+---
+
+## Run the app
+
+The live PWA is at **[node-zero.pages.dev](https://node-zero.pages.dev)**. Install it on any device — it works offline.
+
+To run locally:
 
 ```bash
-npm install @p31/node-zero
+cd pwa
+npm install
+npm run dev
 ```
 
-## What It Does
+Open `http://localhost:5173`. The P31 tab walks through the Quantum Hello World — identity generation, covenant, molecule formation, geodesic building — all wired to the real stack. The Shelter tab shows system status.
 
-**Identity** — WebCrypto P-256 keypair generation, key rotation with certificate chains, social recovery (M-of-N threshold), device migration. Your identity is a Base58Check-encoded hash of your public key.
-
-**Bonds** — 5-phase ECDH handshake between two nodes. Trust evolves through four tiers (GHOST → STRUT → COHERENT → RESONANT) based on a Care Score computed from interaction frequency, reciprocity, and consistency over a 7-day sliding window.
-
-**Vault** — AES-256-GCM encrypted storage organized in named layers (medical, legal, personal). Each layer has its own Data Encryption Key, wrapped per-bond so trusted peers can access shared layers without seeing private ones.
-
-**State** — 4-axis emotional state vector (Urgency, Valence, Cognitive Load, Coherence) with scope tier transitions (PATTERN → REFLEX → TUNNEL → SHUTDOWN). Broadcasts encrypted state to bonded peers.
-
-**Transport** — Pluggable transport layer. Ships with `BroadcastChannelTransport` for browser tab-to-tab communication. Designed for LoRa mesh (Meshtastic) on hardware.
-
-## Quick Start
-
-```typescript
-import {
-  WebCryptoIdentityProvider,
-  BroadcastChannelTransport,
-  ChannelManager,
-  StateEngine,
-  VaultStore,
-  NodeZero,
-} from "@p31/node-zero";
-
-// Boot a node
-const identity = new WebCryptoIdentityProvider();
-await identity.provision();
-
-const transport = new BroadcastChannelTransport("p31-mesh");
-const channels = new ChannelManager(identity, transport);
-const state = new StateEngine();
-const vault = new VaultStore(identity);
-
-const node = new NodeZero({ identity, transport, channels, state, vault });
-await node.boot();
-
-// Listen for events
-node.on("BOND_FORMED", (e) => console.log("Bond formed:", e.bond.peerId));
-node.on("CARE_SCORE_UPDATED", (e) => console.log("Care score:", e.score));
-```
+---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────┐
-│                  NodeZero                    │
-│  ┌───────────┐ ┌──────────┐ ┌────────────┐  │
-│  │ Identity  │ │  Bonds   │ │   Vault    │  │
-│  │ Provider  │ │ Channel  │ │   Store    │  │
-│  │           │ │ Manager  │ │            │  │
-│  └─────┬─────┘ └────┬─────┘ └─────┬──────┘  │
-│        │            │              │         │
-│  ┌─────┴────────────┴──────────────┴──────┐  │
-│  │           State Engine                 │  │
-│  │    [U, V, C, Q] → Scope Tier          │  │
-│  └────────────────┬───────────────────────┘  │
-│                   │                          │
-│  ┌────────────────┴───────────────────────┐  │
-│  │         Transport (pluggable)          │  │
-│  │   BroadcastChannel · LoRa · WebRTC    │  │
-│  └────────────────────────────────────────┘  │
-└─────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                        P31 PWA                              │
+│              node-zero.pages.dev                            │
+│         Vite + React + Service Worker                       │
+└────────────┬──────────────┬──────────────┬──────────────────┘
+             │              │              │
+   ┌─────────▼────┐  ┌─────▼──────┐  ┌───▼──────────┐
+   │  node-zero   │  │love-ledger │  │ game-engine  │
+   │  protocol    │  │  economy   │  │  building    │
+   │  220 tests   │  │  115 tests │  │  104 tests   │
+   │  93.4 kB     │  │  14.2 kB   │  │  21.2 kB     │
+   └──────────────┘  └────────────┘  └──────────────┘
 ```
 
-## Trust Tiers
+The three packages connect through adapters and events — no hard dependencies between them. Each works standalone. Together they form a complete assistive technology platform.
 
-| Tier | Access | Unlocked By |
-|------|--------|-------------|
-| GHOST | Public key + voltage only | Beacon discovery |
-| STRUT | Shared secret, Layer 0 | Bond request accepted |
-| COHERENT | Full state vector, personal layers | Care Score ≥ 0.5 over 7 days |
-| RESONANT | Deep layers (medical, legal) | Care Score ≥ 0.8, sustained |
+### @p31/node-zero — Protocol
 
-## Care Score
+Cryptographic identity (ECDSA P-256), encrypted persistence (AES-GCM), reactive state, peer bonds with trust scoring, and transport-agnostic message routing. The foundation.
 
-The Care Score is a [0, 1] normalized value computed from three weighted components:
+→ [npm](https://www.npmjs.com/package/@p31/node-zero) · [source](src/)
 
-- **Frequency** (0.3) — How often do we interact?
-- **Reciprocity** (0.3) — Is initiation balanced?
-- **Consistency** (0.4) — Do interactions happen regularly?
+### @p31/love-ledger — Economy
 
-Updated daily over a 7-day sliding window. Drives trust tier promotions and economic pool modulation in [@p31/love-ledger](https://www.npmjs.com/package/@p31/love-ledger).
+L.O.V.E. tokens (Ledger of Ontological Volume and Entropy). Soulbound, non-transferable. Earned through building and caring. 50/50 split into Sovereignty and Performance pools. Age-gated vesting protects children's tokens.
 
-## Stats
+→ [GitHub](https://github.com/p31labs/love-ledger) · [npm](https://www.npmjs.com/package/@p31/love-ledger)
 
-- **192 tests** passing
-- **89.7 kB** packed
-- **0** runtime dependencies
-- **WebCrypto** only — no Node.js crypto required
-- **ES2022** module output
+### @p31/game-engine — Building
 
-## Related Packages
+Geodesic construction from Platonic solids. Every structure validated against Maxwell's rigidity criterion (E ≥ 3V − 6). Player progression through five tiers, seven seed challenges, daily quests, build streaks.
 
-- [@p31/love-ledger](https://www.npmjs.com/package/@p31/love-ledger) — Economic layer. Translates Node Zero events into LOVE transactions.
+→ [GitHub](https://github.com/p31labs/game-engine) · [npm](https://www.npmjs.com/package/@p31/game-engine)
+
+---
+
+## The minimum stable system
+
+A tetrahedron has four vertices and six edges. Every vertex sees every other vertex. It is the only polyhedron where this is true, and the smallest structure that satisfies Maxwell's rigidity criterion with zero degrees of freedom.
+
+This is not a metaphor. It is the design principle.
+
+---
+
+## Project structure
+
+```
+├── src/            # @p31/node-zero source
+├── __tests__/      # 220 tests
+├── pwa/            # Vite PWA (auto-deploys to Cloudflare Pages)
+│   ├── src/
+│   │   └── views/
+│   │       ├── P31.tsx                 # Intro + onboarding
+│   │       ├── QuantumHelloWorld.tsx    # Wired flow (real stack)
+│   │       └── Shelter.tsx             # System status
+│   ├── public/     # SW, manifest, offline fallback
+│   └── wrangler.toml
+├── package.json
+└── README.md       # ← you are here
+```
+
+---
+
+## Deploy
+
+The PWA auto-deploys to Cloudflare Pages on every push to `main`. Build command: `npm run build`, output: `dist`, root: `pwa`.
+
+---
+
+## P31 Labs
+
+A Georgia 501(c)(3) nonprofit developing open-source assistive technology for neurodivergent individuals. Named for Phosphorus-31, the only stable isotope of phosphorus — referencing Posner molecules (calcium phosphate clusters) and their role in quantum cognition research.
+
+[phosphorus31.org](https://phosphorus31.org) · [GitHub](https://github.com/p31labs)
 
 ## License
 
-MIT — P31 Labs, a Georgia 501(c)(3) nonprofit.
+MIT
