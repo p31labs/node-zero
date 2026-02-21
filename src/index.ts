@@ -34,3 +34,13 @@ export * from "./transports/index.js";
 // ─── Orchestrator ───────────────────────────────────────────────────
 export { NodeZero } from "./node.js";
 export type { NodeZeroConfig } from "./node.js";
+
+// ─── Forwarder (optional: wires node events → ledger + game) ─────────
+export { wire, boot } from "./forwarder.js";
+export type {
+  EventSource,
+  LedgerLike,
+  GameLike,
+  ForwarderConfig,
+  ForwarderHandle,
+} from "./forwarder.js";

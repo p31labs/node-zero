@@ -1,6 +1,6 @@
 {
   "name": "@p31/node-zero",
-  "version": "0.1.0-alpha.1",
+  "version": "0.2.0-alpha.0",
   "description": "Node Zero Protocol — identity, state, bond, and vault primitives for assistive mesh networks. Zero runtime dependencies. WebCrypto P-256 ECDSA/ECDH, AES-256-GCM, HKDF. Runs in browser and Node.js.",
   "type": "module",
   "main": "./dist/index.js",
@@ -9,6 +9,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./forwarder": {
+      "types": "./dist/forwarder.d.ts",
+      "import": "./dist/forwarder.js"
     },
     "./types": {
       "types": "./dist/types/index.d.ts",
