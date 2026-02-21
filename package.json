@@ -1,0 +1,87 @@
+{
+  "name": "@p31/node-zero",
+  "version": "0.1.0-alpha.1",
+  "description": "Node Zero Protocol — identity, state, bond, and vault primitives for assistive mesh networks. Zero runtime dependencies. WebCrypto P-256 ECDSA/ECDH, AES-256-GCM, HKDF. Runs in browser and Node.js.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    },
+    "./interfaces": {
+      "types": "./dist/interfaces/index.d.ts",
+      "import": "./dist/interfaces/index.js"
+    },
+    "./primitives": {
+      "types": "./dist/primitives/index.d.ts",
+      "import": "./dist/primitives/index.js"
+    },
+    "./codec": {
+      "types": "./dist/codec/index.d.ts",
+      "import": "./dist/codec/index.js"
+    },
+    "./backends": {
+      "types": "./dist/backends/index.d.ts",
+      "import": "./dist/backends/index.js"
+    },
+    "./transports": {
+      "types": "./dist/transports/index.d.ts",
+      "import": "./dist/transports/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "prepublishOnly": "npm run clean && npm run build && npm run test"
+  },
+  "keywords": [
+    "p31",
+    "node-zero",
+    "assistive-technology",
+    "neurodivergent",
+    "mesh-network",
+    "lora",
+    "esp32",
+    "cryptography",
+    "ecdsa",
+    "ecdh",
+    "aes-256-gcm",
+    "hkdf",
+    "webcrypto",
+    "tetrahedron",
+    "k4-topology"
+  ],
+  "author": "P31 Labs",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/p31labs/node-zero.git"
+  },
+  "homepage": "https://github.com/p31labs/node-zero#readme",
+  "bugs": {
+    "url": "https://github.com/p31labs/node-zero/issues"
+  },
+  "sideEffects": false,
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
