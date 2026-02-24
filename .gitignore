@@ -1,5 +1,28 @@
+# Dependencies
 node_modules/
+package-lock.json
+
+# Build outputs
 dist/
-*.tgz
+*.tsbuildinfo
+
+# Turbo
+.turbo/
+
+# Coverage
+coverage/
+
+# Python
+__pycache__/
+*.pyc
+
+# PlatformIO firmware builds
+.pio/
+
+# Environment
+.env
+.env.local
+
+# OS
 .DS_Store
 Thumbs.db
