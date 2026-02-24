@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P31 Labs — Cognitive Prosthetics for Neurodivergent Minds</title>
+<meta name="description" content="Open-source assistive technology for neurodivergent minds. Hardware, software, protocol. Rooted in quantum biology.">
+<meta property="og:title" content="P31 Labs — Cognitive Prosthetics">
+<meta property="og:description" content="Open-source assistive technology for neurodivergent minds. Hardware. Software. Protocol.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://phosphorus31.org">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>▲</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset & Variables ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --void-0: #07070c;
+  --void-1: #0d0d14;
+  --void-2: #14141e;
+  --void-3: #1c1c2a;
+  --phosphor: #39FF14;
+  --phosphor-dim: rgba(57, 255, 20, 0.15);
+  --phosphor-glow: rgba(57, 255, 20, 0.08);
+  --cyan: #06B6D4;
+  --violet: #8B5CF6;
+  --amber: #F59E0B;
+  --rose: #F43F5E;
+  --txt: #e4e4ec;
+  --txt-dim: #8888a0;
+  --txt-muted: #55556a;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --max-w: 1080px;
+  --section-pad: clamp(4rem, 8vw, 7rem) clamp(1.25rem, 4vw, 2rem);
+}
+
+html { scroll-behavior: smooth; background: var(--void-0); }
+
+body {
+  font-family: var(--sans);
+  color: var(--txt);
+  background: var(--void-0);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a { color: var(--phosphor); text-decoration: none; transition: opacity 0.2s; }
+a:hover { opacity: 0.8; }
+
+::selection { background: var(--phosphor); color: var(--void-0); }
+
+/* ─── Utility ───────────────────────────────────────────────────── */
+.container { max-width: var(--max-w); margin: 0 auto; }
+.section { padding: var(--section-pad); }
+.section-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--txt-muted);
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-family: var(--mono);
+  font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+  font-weight: 700;
+  color: var(--txt);
+  line-height: 1.25;
+  margin-bottom: 1.5rem;
+}
+.section-desc {
+  color: var(--txt-dim);
+  font-size: 1.05rem;
+  max-width: 640px;
+  line-height: 1.7;
+}
+.divider {
+  height: 1px;
+  background: var(--border);
+  border: none;
+  margin: 0;
+}
+
+/* ─── Nav ───────────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(7, 7, 12, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem clamp(1.25rem, 4vw, 2rem);
+}
+.nav-brand {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--txt);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.nav-brand .p { color: var(--phosphor); }
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--txt-dim);
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--phosphor); opacity: 1; }
+
+.nav-toggle { display: none; background: none; border: none; color: var(--txt-dim); font-size: 1.5rem; cursor: pointer; }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(7, 7, 12, 0.95); backdrop-filter: blur(16px); padding: 1rem 1.5rem; gap: 1rem; border-bottom: 1px solid var(--border); }
+  .nav-links.open { display: flex; }
+  .nav-toggle { display: block; }
+}
+
+/* ─── Hero ──────────────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6rem 1.5rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 40%, var(--phosphor-glow), transparent),
+    radial-gradient(ellipse 40% 50% at 30% 60%, rgba(6, 182, 212, 0.03), transparent),
+    radial-gradient(ellipse 40% 50% at 70% 60%, rgba(139, 92, 246, 0.03), transparent);
+  pointer-events: none;
+}
+
+.hero-tetra {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 2rem;
+  opacity: 0.7;
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+
+.hero-title {
+  font-family: var(--mono);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+}
+.hero-title .p { color: var(--phosphor); }
+
+.hero-sub {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--txt-muted);
+  margin-bottom: 2rem;
+}
+
+.hero-desc {
+  font-size: 1.15rem;
+  color: var(--txt-dim);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+.hero-desc strong { color: var(--txt); font-weight: 600; }
+
+.hero-badge {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--phosphor);
+  border: 1px solid var(--phosphor-dim);
+  border-radius: 999px;
+  padding: 0.5rem 1.25rem;
+  margin-bottom: 3rem;
+  background: rgba(57, 255, 20, 0.04);
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--void-2);
+  color: var(--txt);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.btn:hover { border-color: var(--border-hover); background: var(--void-3); opacity: 1; }
+.btn-primary {
+  background: var(--phosphor);
+  color: var(--void-0);
+  border-color: var(--phosphor);
+}
+.btn-primary:hover { background: #30dd12; border-color: #30dd12; }
+
+/* ─── Mission ───────────────────────────────────────────────────── */
+.mission-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+@media (max-width: 640px) { .mission-grid { grid-template-columns: 1fr; } }
+
+.mission-card {
+  background: var(--void-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+.mission-card h3 {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.mission-card p {
+  color: var(--txt-dim);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.molecule-banner {
+  margin-top: 2.5rem;
+  background: var(--void-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--txt-dim);
+  line-height: 1.8;
+}
+.molecule-banner .formula { color: var(--phosphor); font-weight: 600; }
+.molecule-banner .note { color: var(--txt-muted); }
+
+/* ─── Products ──────────────────────────────────────────────────── */
+.products-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.product-card {
+  background: var(--void-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.75rem;
+  transition: border-color 0.3s;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+.product-card:hover { border-color: var(--border-hover); }
+
+@media (max-width: 640px) {
+  .product-card { grid-template-columns: 1fr; }
+}
+
+.product-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--void-2);
+  flex-shrink: 0;
+}
+
+.product-content h3 {
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.product-type {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--txt-muted);
+  margin-bottom: 0.75rem;
+}
+.product-content p {
+  color: var(--txt-dim);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.tag {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  background: var(--void-2);
+  border: 1px solid var(--border);
+  color: var(--txt-muted);
+}
+.tag-live {
+  border-color: var(--phosphor-dim);
+  color: var(--phosphor);
+  background: rgba(57, 255, 20, 0.05);
+}
+
+/* ─── Live Systems ──────────────────────────────────────────────── */
+.systems-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+@media (max-width: 640px) { .systems-grid { grid-template-columns: 1fr; } }
+
+.system-card {
+  display: block;
+  background: var(--void-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: all 0.25s;
+  text-decoration: none;
+}
+.system-card:hover { border-color: var(--phosphor-dim); transform: translateY(-2px); opacity: 1; }
+.system-card.disabled { pointer-events: none; opacity: 0.6; }
+
+.system-status {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.status-live { background: var(--phosphor); box-shadow: 0 0 6px var(--phosphor); }
+.status-dev { background: var(--amber); }
+.status-soon { background: var(--txt-muted); }
+
+.system-card h3 {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--txt);
+  margin-bottom: 0.4rem;
+}
+.system-card p {
+  color: var(--txt-dim);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+/* ─── Math ──────────────────────────────────────────────────────── */
+.math-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+@media (max-width: 640px) { .math-grid { grid-template-columns: 1fr; } }
+
+.math-card {
+  background: var(--void-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+.math-card h3 {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--txt);
+  margin-bottom: 0.75rem;
+}
+.math-formula {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--phosphor);
+  background: var(--void-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  overflow-x: auto;
+}
+.math-card p {
+  color: var(--txt-dim);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+/* ─── Publications ──────────────────────────────────────────────── */
+.pub-card {
+  background: var(--void-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.75rem;
+  margin-top: 2rem;
+}
+.pub-card h3 {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+.pub-meta {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--txt-muted);
+  margin-bottom: 0.75rem;
+}
+.pub-card p {
+  color: var(--txt-dim);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.pub-license {
+  margin-top: 1rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--txt-muted);
+  line-height: 1.6;
+}
+
+/* ─── Partnerships ──────────────────────────────────────────────── */
+.partners-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+@media (max-width: 768px) { .partners-grid { grid-template-columns: 1fr; } }
+
+.partner-card {
+  background: var(--void-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+.partner-card h3 {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.partner-card p {
+  color: var(--txt-dim);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+/* ─── Donate ────────────────────────────────────────────────────── */
+.donate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+@media (max-width: 640px) { .donate-grid { grid-template-columns: 1fr; } }
+
+.donate-card {
+  background: var(--void-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  position: relative;
+}
+.donate-card h3 {
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.donate-card p {
+  color: var(--txt-dim);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+.donate-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  border: 1px solid var(--amber);
+  color: var(--amber);
+  background: rgba(245, 158, 11, 0.06);
+  margin-bottom: 1rem;
+}
+.crypto-addr {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--txt-muted);
+  background: var(--void-2);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  word-break: break-all;
+  border: 1px solid var(--border);
+}
+.donate-note {
+  margin-top: 2rem;
+  font-size: 0.8rem;
+  color: var(--txt-muted);
+  line-height: 1.6;
+}
+
+/* ─── Identity ──────────────────────────────────────────────────── */
+.identity-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+@media (max-width: 640px) { .identity-grid { grid-template-columns: 1fr 1fr; } }
+
+.id-link {
+  display: flex;
+  flex-direction: column;
+  background: var(--void-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+.id-link:hover { border-color: var(--phosphor-dim); opacity: 1; }
+.id-link-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--txt-muted);
+  margin-bottom: 0.25rem;
+}
+.id-link-value {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--phosphor);
+}
+
+/* ─── Founder ───────────────────────────────────────────────────── */
+.founder-block {
+  background: var(--void-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.75rem;
+  margin-top: 2rem;
+}
+.founder-block h3 {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+.founder-block p {
+  color: var(--txt-dim);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+.founder-block p + p { margin-top: 0.75rem; }
+
+/* ─── Footer ────────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem clamp(1.25rem, 4vw, 2rem);
+  text-align: center;
+}
+.footer-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.footer-links a {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--txt-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.footer-links a:hover { color: var(--phosphor); }
+.footer-copy {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--txt-muted);
+}
+
+/* ─── Fade-in animation ─────────────────────────────────────────── */
+.fade-section {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- ─── Nav ────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-brand"><span class="p">P31</span> Labs</a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">☰</button>
+    <ul class="nav-links">
+      <li><a href="#mission">Mission</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#systems">Live</a></li>
+      <li><a href="#math">Math</a></li>
+      <li><a href="#publications">Papers</a></li>
+      <li><a href="#donate">Support</a></li>
+      <li><a href="#identity">Identity</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ─── Hero ───────────────────────────────────────────────────── -->
+<section class="hero">
+  <svg class="hero-tetra" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M32 8L52 48H12L32 8Z" stroke="#39FF14" stroke-width="1.5" fill="none" opacity="0.6"/>
+    <path d="M32 8L42 38" stroke="#39FF14" stroke-width="1" opacity="0.3"/>
+    <path d="M32 8L22 38" stroke="#39FF14" stroke-width="1" opacity="0.3"/>
+    <path d="M22 38L42 38" stroke="#39FF14" stroke-width="1" opacity="0.4"/>
+    <circle cx="32" cy="8" r="2" fill="#39FF14" opacity="0.8"/>
+    <circle cx="12" cy="48" r="2" fill="#39FF14" opacity="0.5"/>
+    <circle cx="52" cy="48" r="2" fill="#39FF14" opacity="0.5"/>
+    <circle cx="32" cy="34" r="1.5" fill="#39FF14" opacity="0.4"/>
+  </svg>
+
+  <h1 class="hero-title"><span class="p">P31</span> Labs</h1>
+  <p class="hero-sub">Georgia 501(c)(3) Nonprofit · Est. 2026</p>
+
+  <p class="hero-desc">
+    <strong>Open-source cognitive prosthetics</strong> for neurodivergent minds. Hardware. Software. Protocol. Rooted in quantum biology.
+  </p>
+
+  <div class="hero-badge">Phosphorus-31 · The Only Stable Isotope · Quantum Spin ½</div>
+
+  <div class="hero-ctas">
+    <a href="https://p31ca.org" class="btn btn-primary">Shelter PWA →</a>
+    <a href="#systems" class="btn">Live Systems</a>
+    <a href="https://github.com/p31labs" class="btn">GitHub</a>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── Mission ────────────────────────────────────────────────── -->
+<section class="section fade-section" id="mission">
+  <div class="container">
+    <div class="section-label">Mission</div>
+    <h2 class="section-title">Cognitive prosthetics, not cognitive patches.</h2>
+    <p class="section-desc">
+      P31 Labs develops assistive technology that works <em>with</em> neurodivergent cognition instead of forcing neurotypical patterns. Our tools don't train you to mask. They amplify how you already think.
+    </p>
+
+    <div class="mission-grid">
+      <div class="mission-card">
+        <h3>Why P31?</h3>
+        <p>Phosphorus-31 is the only stable isotope of phosphorus and the foundation of ATP — the molecule powering every thought. It's NMR-active with quantum spin ½, making it nature's own quantum sensor.</p>
+      </div>
+      <div class="mission-card">
+        <h3>Why Ca?</h3>
+        <p>Combined with calcium, phosphorus forms the Posner molecule — Ca₉(PO₄)₆ — the hypothesized substrate for quantum coherence in biological systems. Our product suite is designed from the molecular level up.</p>
+      </div>
+    </div>
+
+    <div class="molecule-banner">
+      <span class="formula">Ca₉(PO₄)₆</span> — The Posner Molecule<br>
+      <span class="note">phosphorus31.org = the science · p31ca.org = the organism</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── Products ───────────────────────────────────────────────── -->
+<section class="section fade-section" id="products">
+  <div class="container">
+    <div class="section-label">Products</div>
+    <h2 class="section-title">Three layers. One organism.</h2>
+
+    <div class="products-grid">
+      <!-- Node One -->
+      <div class="product-card">
+        <div class="product-icon" style="color: var(--cyan);">△</div>
+        <div class="product-content">
+          <h3>Node One</h3>
+          <div class="product-type">Hardware · ESP32-S3 · Open Source</div>
+          <p>An assistive wearable with haptic feedback for sensory regulation, LoRa mesh for off-grid communication, and hardware-backed identity. Every digital action has a physical recoil — the Thick Click.</p>
+          <div class="product-tags">
+            <span class="tag">ESP32-S3</span>
+            <span class="tag">LoRa 915MHz</span>
+            <span class="tag">DRV2605L</span>
+            <span class="tag">Meshtastic</span>
+            <span class="tag">Open Hardware</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Buffer -->
+      <div class="product-card">
+        <div class="product-icon" style="color: var(--violet);">◇</div>
+        <div class="product-content">
+          <h3>The Buffer</h3>
+          <div class="product-type">Software · Communication Processor</div>
+          <p>A communication processing layer for people whose brains overshoot. Voltage analysis, pattern detection, pause timing, progressive disclosure. Not a filter — a lens. See your signal before it transmits.</p>
+          <div class="product-tags">
+            <span class="tag tag-live">Live in Shelter</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">PWA</span>
+            <span class="tag">Offline-first</span>
+            <span class="tag">IndexedDB</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Centaur -->
+      <div class="product-card">
+        <div class="product-icon" style="color: var(--amber);">◎</div>
+        <div class="product-content">
+          <h3>The Centaur</h3>
+          <div class="product-type">Protocol · Human-AI Collaboration</div>
+          <p>A structured protocol for human-AI collaboration. The human provides direction, context, and judgment. The AI provides execution, memory, and synthesis. Named for riding together. Built for systems thinkers.</p>
+          <div class="product-tags">
+            <span class="tag">TypeScript</span>
+            <span class="tag">Multi-agent</span>
+            <span class="tag">Context Protocol</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── Live Systems ───────────────────────────────────────────── -->
+<section class="section fade-section" id="systems">
+  <div class="container">
+    <div class="section-label">Live Systems</div>
+    <h2 class="section-title">Four surfaces. One organism.</h2>
+
+    <div class="systems-grid">
+      <a href="https://p31ca.org" class="system-card">
+        <div class="system-status" style="color: var(--phosphor);">
+          <span class="status-dot status-live"></span> Live · Installable
+        </div>
+        <h3>P31 Shelter</h3>
+        <p>Cognitive protection layer. Message voltage scoring, AI rewrite, breathing pacer, energy tracking, game engine, L.O.V.E. wallet. Offline-first PWA. No account needed.</p>
+      </a>
+
+      <a href="https://phosphorus31.org/mesh" class="system-card">
+        <div class="system-status" style="color: var(--phosphor);">
+          <span class="status-dot status-live"></span> Live · Interactive
+        </div>
+        <h3>Living Mesh</h3>
+        <p>Quantum identity formation, geodesic dome building, entanglement visualization. The more you use it, the more alive it becomes. E = 3V − 6.</p>
+      </a>
+
+      <a href="https://p31-spectrum.pages.dev" class="system-card">
+        <div class="system-status" style="color: var(--amber);">
+          <span class="status-dot status-dev"></span> In Development
+        </div>
+        <h3>P31 Spectrum</h3>
+        <p>Full-experience platform. Molecule visualization, collaborative world building, game engine integration, family hub. The interface layer for the complete P31 ecosystem.</p>
+      </a>
+
+      <a href="https://phosphorus31.org/brain" class="system-card">
+        <div class="system-status" style="color: var(--amber);">
+          <span class="status-dot status-dev"></span> In Development
+        </div>
+        <h3>Geodesic Brain</h3>
+        <p>Interactive cognitive architecture. Six brain regions mapped to geodesic dome vertices, seven API connections, adaptive focus modes. Research, synthesize, build, ship, remember, regulate.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── Math ────────────────────────────────────────────────────── -->
+<section class="section fade-section" id="math">
+  <div class="container">
+    <div class="section-label">The Math</div>
+    <h2 class="section-title">Background independent security.</h2>
+    <p class="section-desc">Traditional encryption assumes computational difficulty. We assume physics.</p>
+
+    <div class="math-grid">
+      <div class="math-card">
+        <h3>SIC-POVM Condition</h3>
+        <div class="math-formula">|⟨ψ<sub>i</sub>|ψ<sub>j</sub>⟩|² = 1/(d+1) for i ≠ j</div>
+        <p>Four quantum states forming a regular tetrahedron on the Bloch sphere. Maximum information, minimum disturbance.</p>
+      </div>
+
+      <div class="math-card">
+        <h3>Wye → Delta Transform</h3>
+        <div class="math-formula">Z<sub>Δ</sub> = (Z₁Z₂ + Z₂Z₃ + Z₃Z₁) / Z<sub>opp</sub></div>
+        <p>Every centralized topology can be replaced with a mesh. Every hierarchy dissolved into peers. The math that rewires circuits rewires systems.</p>
+      </div>
+
+      <div class="math-card">
+        <h3>Fuller's Synergetic Constant</h3>
+        <div class="math-formula">V<sub>tet</sub> = 1</div>
+        <p>Nature doesn't use cubic coordinates. The tetrahedron is the minimum structural system. Unit volume = 1.</p>
+      </div>
+
+      <div class="math-card">
+        <h3>Von Neumann Entropy</h3>
+        <div class="math-formula">S(ρ) = −Tr(ρ log₂ ρ)</div>
+        <p>Uncertainty is not noise — it is signal. The Buffer measures communication entropy to detect coercive patterns.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── Publications ────────────────────────────────────────────── -->
+<section class="section fade-section" id="publications">
+  <div class="container">
+    <div class="section-label">Publications</div>
+    <h2 class="section-title">Timestamped. Citable. Permanent.</h2>
+
+    <div class="pub-card">
+      <h3>The Tetrahedron Protocol: A Geometric Framework for Sovereign Communication</h3>
+      <div class="pub-meta">Johnson, W. R. (2025) · Zenodo · DOI: <a href="https://zenodo.org/records/18627420">10.5281/zenodo.18627420</a></div>
+      <p>Demonstrates that the regular tetrahedron serves as a universal design principle connecting quantum information theory, structural engineering, quantum biology, and network topology.</p>
+      <div class="pub-license">
+        Apache 2.0 (software) · CERN-OHL-W v2 (hardware) · CC BY-SA 4.0 (docs)<br>
+        Defensive publication establishing prior art in the public domain.
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── Partnerships ────────────────────────────────────────────── -->
+<section class="section fade-section" id="partnerships">
+  <div class="container">
+    <div class="section-label">Partnerships</div>
+    <h2 class="section-title">Building with, not for.</h2>
+
+    <div class="partners-grid">
+      <div class="partner-card">
+        <h3>Georgia Tech Tools for Life</h3>
+        <p>Georgia's Assistive Technology Act Program. P31 Labs develops hardware and software in coordination with Tools for Life's statewide AT network.</p>
+      </div>
+      <div class="partner-card">
+        <h3>Makers Making Change</h3>
+        <p>Open-source assistive technology community. Node One is designed for distribution through MMC's local fabrication network.</p>
+      </div>
+      <div class="partner-card">
+        <h3>Hack Club HCB</h3>
+        <p>Fiscal sponsorship enabling tax-deductible donations under The Hack Foundation's 501(c)(3) status while P31 Labs completes its own IRS determination.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── Donate ──────────────────────────────────────────────────── -->
+<section class="section fade-section" id="donate">
+  <div class="container">
+    <div class="section-label">Support</div>
+    <h2 class="section-title">Strengthen the mesh.</h2>
+
+    <div class="donate-grid">
+      <div class="donate-card">
+        <div class="donate-badge">Coming Soon</div>
+        <h3>Donate with Card</h3>
+        <p>One-time or monthly via credit card through HCB. Automatic tax receipts included. 7% fiscal sponsor fee covers Stripe processing, tax compliance, and bookkeeping.</p>
+        <span class="btn" style="opacity: 0.5; pointer-events: none;">HCB Donations — Activating Soon</span>
+      </div>
+
+      <div class="donate-card">
+        <h3>Donate with Crypto</h3>
+        <p>Direct cryptocurrency donations. Supports Base, Ethereum, and Optimism networks.</p>
+        <div class="crypto-addr">0x90048cbb3CDCef200a54D6D336EbB4e0ce18d82c</div>
+        <p style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--txt-muted);">Crypto donations may not be tax-deductible unless processed through The Hack Foundation.</p>
+      </div>
+    </div>
+
+    <p class="donate-note">
+      <strong>Fiscal Sponsorship:</strong> P31 Labs is fiscally sponsored by The Hack Foundation (d.b.a. Hack Club), a 501(c)(3) nonprofit (EIN: 81-2908499). Donations made through HCB are tax-deductible to the extent permitted by law.
+    </p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── Identity ───────────────────────────────────────────────── -->
+<section class="section fade-section" id="identity">
+  <div class="container">
+    <div class="section-label">Verified Identity</div>
+    <h2 class="section-title">Triangulated. Permanent.</h2>
+
+    <div class="identity-grid">
+      <a href="https://orcid.org/0009-0002-2492-9079" class="id-link" target="_blank" rel="noopener">
+        <span class="id-link-label">ORCID</span>
+        <span class="id-link-value">0009-0002-2492-9079</span>
+      </a>
+      <a href="https://zenodo.org/records/18627420" class="id-link" target="_blank" rel="noopener">
+        <span class="id-link-label">Zenodo DOI</span>
+        <span class="id-link-value">10.5281/zenodo.18627420</span>
+      </a>
+      <a href="https://github.com/p31labs" class="id-link" target="_blank" rel="noopener">
+        <span class="id-link-label">GitHub</span>
+        <span class="id-link-value">p31labs</span>
+      </a>
+      <a href="https://thegeodesicself.substack.com" class="id-link" target="_blank" rel="noopener">
+        <span class="id-link-label">Substack</span>
+        <span class="id-link-value">The Geodesic Self</span>
+      </a>
+      <a href="https://p31ca.org" class="id-link" target="_blank" rel="noopener">
+        <span class="id-link-label">Live Product</span>
+        <span class="id-link-value">p31ca.org</span>
+      </a>
+      <a href="https://phosphorus31.org" class="id-link">
+        <span class="id-link-label">Corporate</span>
+        <span class="id-link-value">phosphorus31.org</span>
+      </a>
+    </div>
+
+    <!-- Founder -->
+    <div class="founder-block">
+      <h3>Will</h3>
+      <p>16-year DoD civilian engineer specializing in electrical systems and safety-critical infrastructure. Diagnosed AuDHD in 2025 after decades of undiagnosed neurodivergence. Left federal service to build the tools that would have changed everything if they'd existed 20 years ago.</p>
+      <p>Deep expertise in embedded systems, systematic troubleshooting, and translating complex technical concepts into accessible frameworks. Applying engineering discipline to the problem of cognitive accessibility.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── Contact ─────────────────────────────────────────────────── -->
+<section class="section fade-section" id="contact">
+  <div class="container" style="text-align: center;">
+    <div class="section-label">Contact</div>
+    <h2 class="section-title" style="font-size: clamp(1.25rem, 3vw, 1.75rem);">will@p31ca.org</h2>
+    <p class="section-desc" style="margin: 0 auto 1.5rem;">
+      For partnership inquiries, grant coordination, assistive technology collaboration, or just to talk about Posner molecules.
+    </p>
+    <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+      <a href="mailto:will@p31ca.org" class="btn btn-primary">Email →</a>
+      <a href="https://github.com/p31labs" class="btn">GitHub</a>
+      <a href="https://thegeodesicself.substack.com" class="btn">Substack</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ─────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="https://github.com/p31labs">GitHub</a>
+      <a href="https://orcid.org/0009-0002-2492-9079">ORCID</a>
+      <a href="https://zenodo.org/records/18627420">Zenodo</a>
+      <a href="https://p31ca.org">Shelter</a>
+    </div>
+    <p class="footer-copy">© 2026 P31 Labs · Georgia 501(c)(3) Nonprofit (in formation) · The Mesh Holds. ▲</p>
+  </div>
+</footer>
+
+<!-- ─── Intersection Observer for fade-in ──────────────────────── -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-section').forEach(el => io.observe(el));
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+name = "p31-bonding-relay"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# Create namespace with: cd worker && npx wrangler kv namespace create GAME_KV
+# Then paste the id below.
+[[kv_namespaces]]
+binding = "GAME_KV"
+id = "161faa0a878941669f3fb8b956bf564b"

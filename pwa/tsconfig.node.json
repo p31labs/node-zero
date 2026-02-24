@@ -5,7 +5,11 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
-    "strict": true
+    "strict": true,
+    "outDir": "./dist-ts-node",
+    "rootDir": ".",
+    "declaration": true,
+    "declarationMap": true
   },
   "include": ["vite.config.ts"]
 }

@@ -1,3 +1,7 @@
+import { Link } from "react-router-dom";
+import { useSession } from "../context/SessionContext";
+import { WalletCard, GenesisDomeCard } from "./ShelterLive";
+
 const stack = [
   ["@p31/node-zero", "0.2.0-α.0", "220 tests", "#6366f1"],
   ["@p31/love-ledger", "0.1.0-α.0", "115 tests", "#f59e0b"],
@@ -12,6 +16,8 @@ const links = [
 ] as const;
 
 export function Shelter() {
+  const { session, loading } = useSession();
+
   return (
     <div style={{ padding: 20, maxWidth: 600, margin: "0 auto" }}>
       <div className="label" style={{ letterSpacing: 4, marginBottom: 24 }}>
@@ -22,11 +28,11 @@ export function Shelter() {
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
           <span className="label">NODE STATUS</span>
           <span className="mono" style={{ fontSize: 10, color: "#31ffa3", letterSpacing: 1 }}>
-            ● ONLINE
+            {loading ? "…" : session ? "● ALIVE" : "● ONLINE"}
           </span>
         </div>
         <div className="mono" style={{ fontSize: 13, color: "#888" }}>
-          Identity: wired via Quantum Hello World (real stack)
+          Identity: {session ? "wired via Quantum Hello World (real stack)" : "complete QHW to see wallet & dome"}
         </div>
       </div>
 
@@ -59,39 +65,22 @@ export function Shelter() {
         ))}
       </div>
 
-      <div className="card" style={{ borderColor: "#22c55e20" }}>
-        <div className="mono" style={{ fontSize: 10, color: "#22c55e", letterSpacing: 2, marginBottom: 8 }}>
-          ✓ STRUCTURE[0] — GENESIS DOME
+      <Link
+        to="/mesh"
+        className="card"
+        style={{ display: "block", textDecoration: "none", color: "inherit" }}
+      >
+        <div className="label" style={{ marginBottom: 8 }}>LIVING MESH</div>
+        <div className="mono" style={{ fontSize: 12, color: "#31ffa380" }}>
+          /mesh
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between" }} className="mono">
-          <span style={{ fontSize: 12, color: "#888" }}>V: 4 · E: 6</span>
-          <span style={{ fontSize: 12, color: "#31ffa3" }}>Coherence: 1.000</span>
+        <div style={{ fontSize: 11, color: "#555", marginTop: 6 }}>
+          {session ? "View your nodes and coherence in-app" : "Complete QHW to see your mesh"}
         </div>
-        <div className="mono" style={{ fontSize: 10, color: "#555", marginTop: 4 }}>
-          Maxwell: E ≥ 3V − 6 → 6 ≥ 6 ✓ RIGID
-        </div>
-      </div>
+      </Link>
 
-      <div className="card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
-          <span className="label">L.O.V.E. WALLET</span>
-          <span className="mono" style={{ fontSize: 24, color: "#31ffa3", fontWeight: 600 }}>
-            90.0
-          </span>
-        </div>
-        <div style={{ display: "flex", gap: 12 }}>
-          <div style={{ flex: 1, padding: 10, background: "#111827", borderRadius: 6, borderLeft: "3px solid #6366f1" }}>
-            <div className="mono" style={{ fontSize: 10, color: "#6366f1", marginBottom: 4 }}>SOVEREIGNTY</div>
-            <div className="mono" style={{ fontSize: 16, color: "#e2e8f0" }}>45.0</div>
-            <div className="mono" style={{ fontSize: 9, color: "#555", marginTop: 4 }}>IMMUTABLE</div>
-          </div>
-          <div style={{ flex: 1, padding: 10, background: "#111827", borderRadius: 6, borderLeft: "3px solid #f59e0b" }}>
-            <div className="mono" style={{ fontSize: 10, color: "#f59e0b", marginBottom: 4 }}>PERFORMANCE</div>
-            <div className="mono" style={{ fontSize: 16, color: "#e2e8f0" }}>45.0</div>
-            <div className="mono" style={{ fontSize: 9, color: "#555", marginTop: 4 }}>CS MODULATED</div>
-          </div>
-        </div>
-      </div>
+      <GenesisDomeCard />
+      <WalletCard />
 
       <div style={{ marginTop: 24, textAlign: "center", fontSize: 13, color: "#333", fontStyle: "italic" }}>
         P31 Labs · Georgia 501(c)(3) · MIT License

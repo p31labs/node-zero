@@ -1,0 +1,581 @@
+{
+  "version": "1.0.0",
+  "meta": {
+    "operator": "operator",
+    "generated_at": "2026-02-23T05:50:20.854699+00:00",
+    "source_count": 1,
+    "verified_count": 0,
+    "unverified_count": 14,
+    "disputed_count": 0,
+    "cognitive_load": 0,
+    "last_sync": "2026-02-23T05:50:20.854699+00:00",
+    "entropy_score": 1.0
+  },
+  "axes": {
+    "A": {
+      "name": "Identity",
+      "color": "#ff6b6b",
+      "description": "Self, family, relationships, roles, care scores"
+    },
+    "B": {
+      "name": "Health",
+      "color": "#4ecdc4",
+      "description": "Medical, biological, metabolic, cognitive"
+    },
+    "C": {
+      "name": "Legal",
+      "color": "#ffe66d",
+      "description": "Court, filings, orders, financial forensics"
+    },
+    "D": {
+      "name": "Technical",
+      "color": "#a29bfe",
+      "description": "Engineering, software, hardware, protocols"
+    }
+  },
+  "nodes": [
+    {
+      "id": "n-2c8560d5c9",
+      "label": "TSP hardship withdrawal of 70793",
+      "axis": "C",
+      "bus": "court",
+      "bary": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "TSP hardship withdrawal of 70793",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-654eec1aac",
+      "label": "37 federal tax withheld",
+      "axis": "C",
+      "bus": "court",
+      "bary": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "37 federal tax withheld",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-b9d012e635",
+      "label": "39 early withdrawal penalty",
+      "axis": "C",
+      "bus": "court",
+      "bary": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "39 early withdrawal penalty",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-c61642658d",
+      "label": "72(t)(2)(C) exempts RBCO distributions from 10 percent penal",
+      "axis": "C",
+      "bus": "court",
+      "bary": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "72(t)(2)(C) exempts RBCO distributions from 10 percent penalty",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-895472298c",
+      "label": "Mortgage balance 182449 at 3",
+      "axis": "C",
+      "bus": "court",
+      "bary": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "Mortgage balance 182449 at 3",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-1f837f2585",
+      "label": "October 23 2025 Consent Temporary Order signed by Joseph Eas",
+      "axis": "C",
+      "bus": "court",
+      "bary": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "October 23 2025 Consent Temporary Order signed by Joseph East whose authority was terminated October 20",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-6c7644683b",
+      "label": "Judge Green recusal motion pending",
+      "axis": "C",
+      "bus": "court",
+      "bary": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "Judge Green recusal motion pending",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-cd2cd5f303",
+      "label": "Chief Judge Scarlett continued case to March 12 2026",
+      "axis": "C",
+      "bus": "court",
+      "bary": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "Chief Judge Scarlett continued case to March 12 2026",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-67860a474a",
+      "label": "SSA psychiatric exam February 20 telehealth",
+      "axis": "B",
+      "bus": "medical",
+      "bary": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "SSA psychiatric exam February 20 telehealth",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-ddc02c7a30",
+      "label": "SSA medical exam February 26 Brunswick GA",
+      "axis": "B",
+      "bus": "medical",
+      "bary": [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "SSA medical exam February 26 Brunswick GA",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-a06453be17",
+      "label": "Hypoparathyroidism since 2003",
+      "axis": "A",
+      "bus": "core",
+      "bary": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "Hypoparathyroidism since 2003",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-1ffebb7c4a",
+      "label": "AuDHD diagnosed 2025",
+      "axis": "A",
+      "bus": "core",
+      "bary": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "AuDHD diagnosed 2025",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-bf63d01f75",
+      "label": "P31 Labs 501c3 Georgia nonprofit",
+      "axis": "A",
+      "bus": "core",
+      "bary": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "state": "active",
+      "desc": "P31 Labs 501c3 Georgia nonprofit",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    },
+    {
+      "id": "n-4864db8d1e",
+      "label": "ESP32-S3 firmware for Phenix Navigator with LoRa Meshtastic",
+      "axis": "D",
+      "bus": "software",
+      "bary": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "state": "active",
+      "desc": "ESP32-S3 firmware for Phenix Navigator with LoRa Meshtastic",
+      "connections": [],
+      "evidence": {
+        "verified": false,
+        "confidence": 0.0,
+        "sources": [
+          {
+            "type": "ingestion",
+            "ref": "seed_data",
+            "date": null,
+            "hash": null
+          }
+        ],
+        "disputes": [],
+        "last_verified": null
+      },
+      "timestamps": {
+        "created": "2026-02-23T05:50:20.854457+00:00"
+      },
+      "spoon_cost": 0,
+      "urgency": 0.5,
+      "tags": [],
+      "raw_sources": [
+        "raw-c03843ee64a6"
+      ]
+    }
+  ],
+  "edges": [],
+  "raw_inbox": [
+    {
+      "id": "raw-c03843ee64a6",
+      "content": "TSP hardship withdrawal of 70793.85 gross. 14158.37 federal tax withheld. 7079.39 early withdrawal penalty. 26 U.S.C. 72(t)(2)(C) exempts RBCO distributions from 10 percent penalty. Mortgage balance 182449 at 3.2 percent. October 23 2025 Consent Temporary Order signed by Joseph East whose authority was terminated October 20. Judge Green recusal motion pending. Chief Judge Scarlett continued case to March 12 2026. SSA psychiatric exam February 20 telehealth. SSA medical exam February 26 Brunswick GA. Hypoparathyroidism since 2003. AuDHD diagnosed 2025. P31 Labs 501c3 Georgia nonprofit. ESP32-S3 firmware for Phenix Navigator with LoRa Meshtastic.",
+      "source_type": "text",
+      "source_ref": "seed_data",
+      "ingested_at": "2026-02-23T05:50:20.813797+00:00",
+      "processed": true
+    }
+  ]
+}

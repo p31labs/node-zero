@@ -51,3 +51,15 @@ a.link:hover { color: #31ffa3; }
   cursor: pointer; letter-spacing: 1px;
 }
 .ib .x { background: none; border: none; color: #555; padding: 8px; cursor: pointer; font-size: 16px; margin-left: 12px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); border: 0;
+}
+
+*:focus-visible {
+  outline: 3px solid #FFFFFF;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 5px #000000;
+}

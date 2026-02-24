@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "../context/SessionContext";
 import { QuantumHelloWorld } from "./QuantumHelloWorld";
 
 type View = "intro" | "flow";
 
 export function P31() {
+  const { session, loading } = useSession();
   const [view, setView] = useState<View>("intro");
 
-  if (view === "flow") {
+  // If we have a restored session, skip intro and show ALIVE (QuantumHelloWorld syncs from context)
+  useEffect(() => {
+    if (!loading && session) setView("flow");
+  }, [loading, session]);
+
+  if (view === "flow" || (!loading && session)) {
     return <QuantumHelloWorld />;
   }
 

@@ -4,9 +4,11 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { WebCryptoIdentityProvider } from "@p31/node-zero";
 import { LedgerEngine } from "@p31/love-ledger";
 import { GameEngine, SEED_CHALLENGES } from "@p31/game-engine";
+import { useSession } from "../context/SessionContext";
 
 const PHASES = ["VOID", "CONVERSE", "COVENANT", "FORMING", "BORN", "ALIVE"];
 
@@ -167,6 +169,8 @@ function WalletDisplay({ total }: { total: number }) {
 const CHALLENGE_0 = SEED_CHALLENGES[0];
 
 export function QuantumHelloWorld() {
+  const navigate = useNavigate();
+  const { session, loading, ledger: ctxLedger, game: ctxGame, birthSession } = useSession();
   const [phase, setPhase] = useState(0);
   const [coherence, setCoherence] = useState(0.05);
   const [messages, setMessages] = useState<{ speaker: "P" | "U"; text: string }[]>([]);
@@ -183,6 +187,18 @@ export function QuantumHelloWorld() {
   const [fadeIn, setFadeIn] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
 
+  // Sync from context when session is restored
+  useEffect(() => {
+    if (loading || !session || !ctxLedger || !ctxGame) return;
+    setNodeId(session.nodeId);
+    setFingerprint(session.fingerprint);
+    setDomeNameState(session.domeName);
+    setLedger(ctxLedger);
+    setGame(ctxGame);
+    setCoherence(0.92);
+    setPhase(5);
+  }, [loading, session, ctxLedger, ctxGame]);
+
   useEffect(() => {
     setFadeIn(false);
     const t = setTimeout(() => setFadeIn(true), 50);
@@ -194,11 +210,11 @@ export function QuantumHelloWorld() {
   }, [messages]);
 
   useEffect(() => {
-    if (phase === 0) {
+    if (phase === 0 && !loading && !session) {
       const t = setTimeout(() => setPhase(1), 3000);
       return () => clearTimeout(t);
     }
-  }, [phase]);
+  }, [phase, loading, session]);
 
   useEffect(() => {
     if (phase === 1 && messages.length === 0) {
@@ -312,34 +328,22 @@ export function QuantumHelloWorld() {
     }
   }, [covenantIndex, covenantAccepted]);
 
-  const completeBirth = useCallback(() => {
+  const completeBirth = useCallback(async () => {
     if (!domeName.trim() || !nodeId) return;
 
-    const ledgerInstance = new LedgerEngine(nodeId);
-    const ledgerAdapter = {
-      blockPlaced(meta?: Record<string, unknown>) {
-        ledgerInstance.blockPlaced(meta);
-      },
-      challengeComplete(challengeId: string, love: number) {
-        ledgerInstance.donate(love, { challengeId });
-      },
-    };
-    const gameInstance = new GameEngine(nodeId, {
+    const { ledger: l, game: g } = await birthSession({
+      nodeId,
+      fingerprint,
       domeName: domeName.trim(),
       domeColor: "#31ffa3",
-      ledger: ledgerAdapter,
     });
-
-    ledgerInstance.donate(50, { source: "genesis" });
-    gameInstance.startChallenge("genesis_resonance");
-    gameInstance.completeActiveChallenge();
-    gameInstance.startChallenge("minimum_system");
-    gameInstance.completeActiveChallenge();
-
-    setLedger(ledgerInstance);
-    setGame(gameInstance);
-    setTimeout(() => setPhase(5), 500);
-  }, [domeName, nodeId]);
+    setLedger(l);
+    setGame(g);
+    setTimeout(() => {
+      setPhase(5);
+      navigate("/bonding");
+    }, 500);
+  }, [domeName, nodeId, fingerprint, birthSession, navigate]);
 
   const phaseName = PHASES[phase];
   const displayTx: DisplayTx[] = ledger

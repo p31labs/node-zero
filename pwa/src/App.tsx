@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import { SessionProvider } from "./context/SessionContext";
+import { CognitiveLoadProvider, useCognitiveLoad } from "./context/CognitiveLoadContext";
 import { P31 } from "./views/P31";
 import { Shelter } from "./views/Shelter";
+import { MeshView } from "./views/MeshView";
+import { BondingView } from "./views/BondingView";
+import { SoupStub } from "./views/SoupStub";
+import { MakerStub } from "./views/MakerStub";
 
 let deferredPrompt: { prompt: () => void; userChoice: Promise<{ outcome: string }> } | null = null;
 window.addEventListener("beforeinstallprompt", (e: Event) => {
@@ -23,10 +30,10 @@ function useOnline() {
   return online;
 }
 
-export default function App() {
-  const [tab, setTab] = useState<"p31" | "shelter">("p31");
+function AppContent() {
   const [showInstall, setShowInstall] = useState(false);
   const online = useOnline();
+  const { level, setLevel } = useCognitiveLoad();
 
   useEffect(() => {
     if (deferredPrompt) setShowInstall(true);
@@ -44,26 +51,58 @@ export default function App() {
   return (
     <>
       <nav className="nav">
-        <div
-          className={`tab ${tab === "p31" ? " on" : ""}`}
-          onClick={() => setTab("p31")}
+        <NavLink
+          to="/"
+          className={({ isActive }) => `tab${isActive ? " on" : ""}`}
+          end
         >
           P31
-        </div>
-        <div
-          className={`tab ${tab === "shelter" ? " on" : ""}`}
-          onClick={() => setTab("shelter")}
+        </NavLink>
+        <NavLink
+          to="/shelter"
+          className={({ isActive }) => `tab${isActive ? " on" : ""}`}
         >
           SHELTER
-        </div>
-        <div className="nr">
+        </NavLink>
+        <NavLink
+          to="/mesh"
+          className={({ isActive }) => `tab${isActive ? " on" : ""}`}
+        >
+          MESH
+        </NavLink>
+        <NavLink
+          to="/bonding"
+          className={({ isActive }) => `tab${isActive ? " on" : ""}`}
+        >
+          BONDING
+        </NavLink>
+        <div className="nr" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <label style={{ fontSize: 10, color: "#555" }}>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={level}
+              onChange={(e) => setLevel(Number(e.target.value))}
+              style={{ width: 48, accentColor: level > 70 ? "#31ffa3" : level > 30 ? "#f59e0b" : "#ec4899" }}
+              title="Cognitive load"
+            />
+          </label>
           <span className={`ns ${online ? " on" : ""}`}>
             {online ? "CONNECTED" : "OFFLINE"}
           </span>
         </div>
       </nav>
       <main className="main">
-        {tab === "p31" ? <P31 /> : <Shelter />}
+        <Routes>
+          <Route path="/" element={<P31 />} />
+          <Route path="/shelter" element={<Shelter />} />
+          <Route path="/mesh" element={<MeshView />} />
+          <Route path="/bonding" element={<BondingView />} />
+          <Route path="/soup" element={<SoupStub />} />
+          <Route path="/maker" element={<MakerStub />} />
+          <Route path="*" element={<P31 />} />
+        </Routes>
       </main>
       <div id="ib" className={`ib ${showInstall ? " vis" : ""}`}>
         <span style={{ color: "#888" }}>
@@ -75,5 +114,17 @@ export default function App() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <SessionProvider>
+        <CognitiveLoadProvider>
+          <AppContent />
+        </CognitiveLoadProvider>
+      </SessionProvider>
+    </BrowserRouter>
   );
 }
