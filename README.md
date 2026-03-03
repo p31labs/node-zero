@@ -1,3 +1,5 @@
+> **This repo has been consolidated into [p31labs/andromeda](https://github.com/p31labs/andromeda). This repo is read-only.**
+
 # Phosphorus-31
 
 **Open-source assistive technology for neurodivergent minds.**
