@@ -161,7 +161,8 @@ export function MoleculeCanvas({ game, selectedElement, onPlaceAtom, onPingAtom,
       style={{
         position: "relative",
         width: "100%",
-        minHeight: 280,
+        flex: 1,
+        minHeight: 320,
         background: "#050510",
         overflow: "hidden",
         touchAction: "none",
@@ -171,7 +172,7 @@ export function MoleculeCanvas({ game, selectedElement, onPlaceAtom, onPingAtom,
       <svg
         ref={svgRef}
         width="100%"
-        height="280"
+        height="100%"
         viewBox={`${vbX} ${vbY} ${vbW} ${vbH}`}
         preserveAspectRatio="xMidYMid meet"
         style={{ display: "block", cursor: dragRef.current ? "grabbing" : "grab" }}
@@ -299,7 +300,7 @@ export function MoleculeCanvas({ game, selectedElement, onPlaceAtom, onPingAtom,
                 }
               }}
             >
-              <circle cx={site.x} cy={site.y} r={22} fill="transparent" />
+              <circle cx={site.x} cy={site.y} r={28} fill="transparent" />
               <g transform={`translate(${site.x},${site.y})`} className="bond-site" style={{ pointerEvents: "none" }}>
                 <circle r={5} fill="none" stroke="#31ffa3" strokeWidth={1.5} strokeDasharray="4 3" />
               </g>

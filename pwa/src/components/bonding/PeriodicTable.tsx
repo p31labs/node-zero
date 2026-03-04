@@ -67,10 +67,10 @@ export function PeriodicTable({ elements, selected, onSelect, disabled, waitingN
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: 4,
+          gap: 6,
           overflowX: "auto",
           paddingBottom: 8,
-          minHeight: 48,
+          minHeight: 52,
         }}
       >
         {elements.map((el, i) => {
@@ -86,9 +86,9 @@ export function PeriodicTable({ elements, selected, onSelect, disabled, waitingN
               aria-label={`${el.name}, ${el.valence} bond${el.valence !== 1 ? "s" : ""}. ${isSelected ? "Selected" : ""}`}
               style={{
                 position: "relative",
-                minWidth: 48,
-                minHeight: 48,
-                padding: "6px 8px",
+                minWidth: 52,
+                minHeight: 52,
+                padding: "8px 10px",
                 background: `${el.color}14`,
                 border: `1px solid ${isSelected ? el.color : `${el.color}40`}`,
                 borderRadius: 8,

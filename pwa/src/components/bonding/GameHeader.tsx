@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useCognitiveLoad } from "../../context/CognitiveLoadContext";
 import type { GameState } from "../../lib/bonding/game-store";
+import type { Challenge } from "../../lib/bonding/challenges";
 
 const MOLECULE_EMOJI: Record<string, string> = {
   "Water - you're 60% this": "💧",
@@ -14,9 +15,10 @@ const MOLECULE_EMOJI: Record<string, string> = {
 interface Props {
   game: GameState;
   knownMolecule: string | null;
+  challenge?: Challenge;
 }
 
-export function GameHeader({ game, knownMolecule }: Props) {
+export function GameHeader({ game, knownMolecule, challenge }: Props) {
   const { isMinimal, isCrisis } = useCognitiveLoad();
   const [showMoleculeBanner, setShowMoleculeBanner] = useState(false);
   const [bannerFade, setBannerFade] = useState(false);
@@ -50,19 +52,41 @@ export function GameHeader({ game, knownMolecule }: Props) {
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-        <span style={{ fontSize: 12, color: "#888", letterSpacing: 1 }}>{game.name}</span>
-        <span
-          style={{
-            fontSize: 12,
-            color: current?.color ?? "#31ffa3",
-            fontWeight: 600,
-            letterSpacing: 1,
-            animation: "turnPulse 2s ease-in-out infinite",
-          }}
-        >
-          {turnLabel}
-        </span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {challenge && (
+            <span style={{ fontSize: 13, color: "#31ffa3", fontWeight: 600 }}>
+              Build: {challenge.name} {challenge.emoji}
+            </span>
+          )}
+          {!challenge && <span style={{ fontSize: 12, color: "#888", letterSpacing: 1 }}>{game.name}</span>}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ fontSize: 11, color: "#666", fontFamily: "'DM Mono', monospace" }}>
+            T{game.turnCount}
+          </span>
+          {game.score > 0 && (
+            <span style={{ fontSize: 11, color: "#f59e0b", fontFamily: "'DM Mono', monospace" }}>
+              {game.score}pts
+            </span>
+          )}
+          <span
+            style={{
+              fontSize: 12,
+              color: current?.color ?? "#31ffa3",
+              fontWeight: 600,
+              letterSpacing: 1,
+              animation: "turnPulse 2s ease-in-out infinite",
+            }}
+          >
+            {turnLabel}
+          </span>
+        </div>
       </div>
+      {challenge && (
+        <div style={{ fontSize: 11, color: "#555", marginTop: 4 }}>
+          {challenge.hint} · {challenge.points}pts
+        </div>
+      )}
       {!isMinimal && (
         <>
           <div style={{ fontSize: 14, fontFamily: "'DM Mono', monospace", color: "#ccc", marginTop: 6 }}>

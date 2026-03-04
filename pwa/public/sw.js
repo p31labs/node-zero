@@ -1,7 +1,7 @@
 /**
  * P31 Service Worker — cache-first shell, network-first data, offline fallback
  */
-const CACHE_NAME = "p31-shell-v2";
+const CACHE_NAME = "p31-shell-v3";
 const DATA_CACHE = "p31-data-v1";
 const CDN_CACHE = "p31-cdn-v1";
 
@@ -40,6 +40,9 @@ self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
   const url = new URL(event.request.url);
   if (!url.protocol.startsWith("http")) return;
+
+  // Never cache Vite dev server internals — stale chunks cause duplicate React
+  if (url.pathname.includes("node_modules/.vite/") || url.pathname.startsWith("/@") || url.pathname.startsWith("/src/")) return;
 
   if (url.hostname.includes("fonts.googleapis.com") || url.hostname.includes("fonts.gstatic.com") || url.hostname.includes("cdnjs.cloudflare.com") || url.hostname.includes("unpkg.com")) {
     event.respondWith(staleWhileRevalidate(event.request, CDN_CACHE));

@@ -1,5 +1,6 @@
 import type { GameState } from "./game-store";
 import { ELEMENTS } from "./elements";
+import { identifyMolecule } from "./chemistry";
 
 interface Achievement {
   id: string;
@@ -10,8 +11,8 @@ interface Achievement {
 
 export const ACHIEVEMENTS: Achievement[] = [
   { id: "first_bond", name: "First Bond", desc: "Place your first atom", check: (g) => g.atoms.length >= 2 },
-  { id: "water", name: "Water World", desc: "Build H₂O", check: (g) => g.formula === "H₂O" },
-  { id: "salt", name: "Salty", desc: "Build NaCl", check: (g) => g.formula === "NaCl" },
+  { id: "water", name: "Water World", desc: "Build H₂O", check: (g) => identifyMolecule(g.formula)?.includes("Water") ?? false },
+  { id: "salt", name: "Salty", desc: "Build NaCl", check: (g) => identifyMolecule(g.formula)?.includes("salt") ?? false },
   { id: "carbon_life", name: "Carbon Life", desc: "Use 4+ carbon atoms", check: (g) => g.atoms.filter((a) => a.element === "C").length >= 4 },
   { id: "teamwork", name: "Teamwork", desc: "Both players placed atoms", check: (g) => new Set(g.atoms.map((a) => a.placedBy)).size >= 2 },
   { id: "ten", name: "Decahedron", desc: "10-atom molecule", check: (g) => g.atoms.length >= 10 },

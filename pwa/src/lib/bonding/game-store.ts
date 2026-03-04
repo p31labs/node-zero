@@ -40,6 +40,9 @@ export interface GameState {
   createdAt: string;
   updatedAt: string;
   status: "active" | "complete";
+  challengeId?: string;
+  score: number;
+  turnCount: number;
 }
 
 function openDB(): Promise<IDBDatabase> {
@@ -96,7 +99,7 @@ export async function listGames(): Promise<GameState[]> {
   });
 }
 
-export function newGame(p1: Player, p2: Player, name: string): GameState {
+export function newGame(p1: Player, p2: Player, name: string, challengeId?: string): GameState {
   return {
     id: crypto.randomUUID(),
     name,
@@ -110,6 +113,9 @@ export function newGame(p1: Player, p2: Player, name: string): GameState {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     status: "active",
+    challengeId,
+    score: 0,
+    turnCount: 0,
   };
 }
 
