@@ -1,111 +1,86 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { intakeToGraph, extractCalibration, type Calibration } from '../lib/intake-to-graph';
-import {
-  saveProgress,
-  loadProgress,
-  finalizeOnboarding,
-  hasCompletedOnboarding,
-} from '../lib/onboarding-store';
-import { connectionManager } from '../lib/connection-manager';
-import type { P31Graph } from '@p31-buffer/graph-schema';
+import { useState, useCallback } from 'react';
+import { persistence } from '../lib/persistence';
 
-export type OnboardingPhase = 'loading' | 'wallet' | 'intake' | 'review' | 'complete';
+export type OnboardingGate = 0 | 1 | 2 | 3 | 4;
+
+export interface SensoryProfile {
+  motionScale: number;
+  glowIntensity: number;
+  soundEnabled: boolean;
+  hapticEnabled: boolean;
+}
+
+export interface CalibrationData {
+  sensory: SensoryProfile;
+  initialSpoons: number;
+  name: string;
+  completedAt: string;
+}
+
+const DEFAULT_SENSORY: SensoryProfile = {
+  motionScale: 0.7,
+  glowIntensity: 0.6,
+  soundEnabled: false,
+  hapticEnabled: false,
+};
 
 export function useOnboarding() {
-  const [phase, setPhase] = useState<OnboardingPhase>('loading');
-  const [intakeData, setIntakeData] = useState<Record<string, unknown>>({});
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
-  const [signature, setSignature] = useState<string | null>(null);
+  const [gate, setGate] = useState<OnboardingGate>(() => {
+    const saved = persistence.get<CalibrationData | null>('calibration', null);
+    return saved ? 4 : 0;
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const done = await hasCompletedOnboarding();
-      if (cancelled) return;
-      if (done) {
-        setPhase('complete');
-        return;
+  const [sensory, setSensory] = useState<SensoryProfile>(() => {
+    const saved = persistence.get<CalibrationData | null>('calibration', null);
+    return saved?.sensory ?? DEFAULT_SENSORY;
+  });
+
+  const [initialSpoons, setInitialSpoons] = useState<number>(() => {
+    const saved = persistence.get<CalibrationData | null>('calibration', null);
+    return saved?.initialSpoons ?? 7;
+  });
+
+  const [name, setName] = useState<string>(() => {
+    const saved = persistence.get<CalibrationData | null>('calibration', null);
+    return saved?.name ?? '';
+  });
+
+  const advance = useCallback(() => {
+    setGate((prev) => {
+      const next = Math.min(4, prev + 1) as OnboardingGate;
+      if (next === 4) {
+        const data: CalibrationData = {
+          sensory,
+          initialSpoons,
+          name,
+          completedAt: new Date().toISOString(),
+        };
+        persistence.set('calibration', data);
       }
-      const saved = await loadProgress();
-      if (cancelled) return;
-      if (saved) setIntakeData(saved);
-      setPhase('wallet');
-    })();
-    return () => { cancelled = true; };
-  }, []);
-
-  const liveGraph: P31Graph = useMemo(() => intakeToGraph(intakeData), [intakeData]);
-  const calibration: Calibration = useMemo(() => extractCalibration(intakeData), [intakeData]);
-
-  const updateField = useCallback((fieldId: string, value: unknown) => {
-    setIntakeData(prev => {
-      const next = { ...prev, [fieldId]: value };
-      saveProgress(next).catch(() => {});
       return next;
     });
+  }, [sensory, initialSpoons, name]);
+
+  const reset = useCallback(() => {
+    persistence.remove('calibration');
+    setGate(0);
+    setSensory(DEFAULT_SENSORY);
+    setInitialSpoons(7);
+    setName('');
   }, []);
 
-  const connectWallet = useCallback(async () => {
-    const success = await connectionManager.connectWeb3();
-    if (success) {
-      const handler = (e: Event) => {
-        const detail = (e as CustomEvent).detail;
-        setWalletAddress(detail);
-        window.removeEventListener('p31:web3-connected', handler);
-      };
-      window.addEventListener('p31:web3-connected', handler);
-    }
-  }, []);
-
-  const skipWallet = useCallback(() => setPhase('intake'), []);
-  const startIntake = useCallback(() => setPhase('intake'), []);
-  const finishIntake = useCallback(() => setPhase('review'), []);
-
-  const signAndFinalize = useCallback(async () => {
-    let sig: string | undefined;
-    if (walletAddress) {
-      try {
-        const ethereum = (window as unknown as { ethereum?: { request: (p: { method: string; params: unknown[] }) => Promise<string> } }).ethereum;
-        if (ethereum) {
-          const hash = JSON.stringify(intakeData);
-          sig = await ethereum.request({ method: 'personal_sign', params: [hash, walletAddress] });
-          setSignature(sig ?? null);
-        }
-      } catch {
-        // user declined
-      }
-    }
-    await finalizeOnboarding(intakeData, calibration, walletAddress ?? undefined, sig);
-    setPhase('complete');
-  }, [intakeData, calibration, walletAddress]);
-
-  const skipSignAndFinalize = useCallback(async () => {
-    await finalizeOnboarding(intakeData, calibration);
-    setPhase('complete');
-  }, [intakeData, calibration]);
-
-  const resetOnboarding = useCallback(() => {
-    setIntakeData({});
-    setWalletAddress(null);
-    setSignature(null);
-    setPhase('wallet');
-  }, []);
+  const isComplete = gate === 4;
 
   return {
-    phase,
-    setPhase,
-    intakeData,
-    updateField,
-    liveGraph,
-    calibration,
-    walletAddress,
-    signature,
-    connectWallet,
-    skipWallet,
-    startIntake,
-    finishIntake,
-    signAndFinalize,
-    skipSignAndFinalize,
-    resetOnboarding,
+    gate,
+    sensory,
+    initialSpoons,
+    name,
+    isComplete,
+    setSensory,
+    setInitialSpoons,
+    setName,
+    advance,
+    reset,
   };
 }

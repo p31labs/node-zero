@@ -1,177 +1,92 @@
-import type { GraphNode, Axis, P31Graph } from '@p31-buffer/graph-schema';
-import { INTAKE_SCHEMA, type IntakeField, type IntakeSection } from './intake-schema';
+import type { Graph, GraphNode, GraphEdge } from '../types/graph';
 
-export function fieldToNode(
-  field: IntakeField,
-  section: IntakeSection,
-  value: unknown,
-  index: number,
-): GraphNode | null {
-  if (value === undefined || value === null || value === '') return null;
-  if (Array.isArray(value) && value.length === 0) return null;
+/**
+ * Seed positions: 12 jitterbug vertices at t≈0.85 (SCALE 0.7).
+ * Nodes without coords get assigned by index to spread across vertices.
+ */
+const SEED_POSITIONS: [number, number, number][] = [
+  [0.7, 0.7, 0],
+  [0.7, -0.7, 0],
+  [-0.7, 0.7, 0],
+  [-0.7, -0.7, 0],
+  [0.7, 0, 0.7],
+  [0.7, 0, -0.7],
+  [-0.7, 0, 0.7],
+  [-0.7, 0, -0.7],
+  [0, 0.7, 0.7],
+  [0, 0.7, -0.7],
+  [0, -0.7, 0.7],
+  [0, -0.7, -0.7],
+];
 
-  const voltage = computeFieldVoltage(field, value);
-  const bary = axisWeightedBary(section.axis, index, section.fields.length);
+const SEED_NODES: GraphNode[] = [
+  { id: 'operator', label: 'You', group: 'identity' },
+  { id: 'buffer', label: 'The Buffer', group: 'product' },
+  { id: 'scope', label: 'The Scope', group: 'product' },
+  { id: 'fold', label: 'The Fold', group: 'product' },
+  { id: 'node-one', label: 'Node One', group: 'product' },
+  { id: 'centaur', label: 'The Centaur', group: 'product' },
+  { id: 'sprout', label: 'Sprout', group: 'product' },
+  { id: 'spoons', label: 'Energy', group: 'state' },
+  { id: 'voltage', label: 'Voltage', group: 'state' },
+  { id: 'samson', label: 'SAMSON', group: 'state' },
+  { id: 'breathing', label: 'Breathing', group: 'state' },
+  { id: 'love', label: 'L.O.V.E.', group: 'economy' },
+  { id: 'wallet', label: 'Wallet', group: 'economy' },
+  { id: 'bash', label: 'S.J.', group: 'family' },
+  { id: 'willow', label: 'W.J.', group: 'family' },
+  { id: 'mesh', label: 'The Mesh', group: 'network' },
+  { id: 'posner', label: 'Posner Molecule', group: 'science' },
+  { id: 'larmor', label: '863 Hz', group: 'science' },
+];
 
+const SEED_EDGES: GraphEdge[] = [
+  { source: 'operator', target: 'buffer', type: 'uses' },
+  { source: 'operator', target: 'scope', type: 'monitors' },
+  { source: 'operator', target: 'fold', type: 'writes' },
+  { source: 'operator', target: 'centaur', type: 'collaborates' },
+  { source: 'operator', target: 'spoons', type: 'has' },
+  { source: 'operator', target: 'breathing', type: 'practices' },
+  { source: 'spoons', target: 'samson', type: 'feeds' },
+  { source: 'samson', target: 'voltage', type: 'governs' },
+  { source: 'breathing', target: 'spoons', type: 'recovers' },
+  { source: 'voltage', target: 'buffer', type: 'gates' },
+  { source: 'love', target: 'wallet', type: 'stores' },
+  { source: 'operator', target: 'love', type: 'earns' },
+  { source: 'operator', target: 'bash', type: 'parent' },
+  { source: 'operator', target: 'willow', type: 'parent' },
+  { source: 'bash', target: 'sprout', type: 'uses' },
+  { source: 'willow', target: 'sprout', type: 'uses' },
+  { source: 'mesh', target: 'node-one', type: 'hardware' },
+  { source: 'mesh', target: 'posner', type: 'models' },
+  { source: 'posner', target: 'larmor', type: 'resonates' },
+  { source: 'node-one', target: 'operator', type: 'assists' },
+];
+
+function withPositions(nodes: GraphNode[]): GraphNode[] {
+  return nodes.map((n, i) => {
+    const [vx, vy, vz] = SEED_POSITIONS[i % 12];
+    const offset = Math.floor(i / 12) * 0.08;
+    return {
+      ...n,
+      x: n.x ?? vx + offset * (i % 3 === 0 ? 1 : 0),
+      y: n.y ?? vy + offset * (i % 3 === 1 ? 1 : 0),
+      z: n.z ?? vz,
+    };
+  });
+}
+
+export function createSeedGraph(): Graph {
   return {
-    id: `intake:${field.id}`,
-    label: field.label,
-    axis: section.axis,
-    state: 'active',
-    bary,
-    voltage: {
-      urgency: voltage,
-      emotional: field.voltageWeight > 0.3 ? voltage * 0.8 : 0,
-      cognitive: field.type === 'textarea' ? 0.3 : 0.1,
-    },
-    metadata: {
-      source: 'intake',
-      fieldId: field.id,
-      fieldType: field.type,
-      answeredAt: Date.now(),
-    },
-    connections: [],
-  } as GraphNode;
-}
-
-export function intakeToGraph(data: Record<string, unknown>): P31Graph {
-  const nodes: GraphNode[] = [];
-  const edges: { source: string; target: string; weight: number }[] = [];
-
-  for (const section of INTAKE_SCHEMA.sections) {
-    const sectionNodes: GraphNode[] = [];
-
-    for (let i = 0; i < section.fields.length; i++) {
-      const field = section.fields[i];
-      const value = data[field.id];
-      const node = fieldToNode(field, section, value, i);
-      if (node) {
-        nodes.push(node);
-        sectionNodes.push(node);
-      }
-    }
-
-    for (let i = 1; i < sectionNodes.length; i++) {
-      edges.push({
-        source: sectionNodes[i - 1].id,
-        target: sectionNodes[i].id,
-        weight: 0.5,
-      });
-    }
-  }
-
-  const crossLinks: [string, string][] = [
-    ['intake:neurotype', 'intake:energy_baseline'],
-    ['intake:energy_baseline', 'intake:stressors'],
-    ['intake:stressors', 'intake:support_level'],
-    ['intake:tech_comfort', 'intake:sensory_prefs'],
-    ['intake:neurotype', 'intake:sensory_prefs'],
-    ['intake:sleep_quality', 'intake:energy_baseline'],
-    ['intake:safe_space', 'intake:support_level'],
-  ];
-
-  for (const [src, tgt] of crossLinks) {
-    if (nodes.some(n => n.id === src) && nodes.some(n => n.id === tgt)) {
-      edges.push({ source: src, target: tgt, weight: 0.3 });
-    }
-  }
-
-  return { nodes, edges } as P31Graph;
-}
-
-function computeFieldVoltage(field: IntakeField, value: unknown): number {
-  const weight = field.voltageWeight;
-  if (weight === 0) return 0;
-  let raw = 0;
-
-  switch (field.type) {
-    case 'scale': {
-      const min = field.min ?? 1;
-      const max = field.max ?? 10;
-      const normalized = (Number(value) - min) / (max - min);
-      raw = field.invertVoltage ? 1 - normalized : normalized;
-      break;
-    }
-    case 'boolean':
-      raw = field.invertVoltage ? (value ? 0 : 1) : (value ? 1 : 0);
-      break;
-    case 'multi_select': {
-      const count = Array.isArray(value) ? value.length : 0;
-      const maxOptions = field.options?.length ?? 1;
-      raw = count / maxOptions;
-      if (Array.isArray(value) && value.includes('None currently')) raw = 0;
-      if (Array.isArray(value) && value.includes('Neurotypical')) raw = 0;
-      break;
-    }
-    case 'select': {
-      const idx = field.options?.indexOf(value as string) ?? 0;
-      const max = Math.max((field.options?.length ?? 1) - 1, 0);
-      raw = max > 0 ? idx / max : 0;
-      if (field.invertVoltage) raw = 1 - raw;
-      break;
-    }
-    case 'textarea':
-      raw = Math.min(String(value).length / 500, 1);
-      break;
-    default:
-      raw = 0.1;
-  }
-  return Math.min(raw * weight * 10, 10);
-}
-
-function axisWeightedBary(axis: Axis, fieldIndex: number, fieldCount: number): [number, number, number, number] {
-  const primary = 0.6 + (fieldIndex / Math.max(fieldCount - 1, 1)) * 0.15;
-  const secondary = (1 - primary) / 3;
-  const jitter = () => secondary + (Math.random() - 0.5) * 0.05;
-  switch (axis) {
-    case 'A': return [primary, jitter(), jitter(), jitter()];
-    case 'B': return [jitter(), primary, jitter(), jitter()];
-    case 'C': return [jitter(), jitter(), primary, jitter()];
-    case 'D': return [jitter(), jitter(), jitter(), primary];
-    default: return [0.25, 0.25, 0.25, 0.25];
-  }
-}
-
-export interface Calibration {
-  initialSpoons: number;
-  suggestedOS: string;
-  initialEntropy: number;
-  sensoryPrefs: string[];
-  displayName: string;
-  pronouns: string | null;
-}
-
-export function extractCalibration(data: Record<string, unknown>): Calibration {
-  return {
-    initialSpoons: data.energy_baseline != null ? Number(data.energy_baseline) : 8,
-    suggestedOS: inferGenSync(data.comm_preference as string | undefined, data.tech_comfort as number | undefined),
-    initialEntropy: estimateEntropy(data),
-    sensoryPrefs: (data.sensory_prefs as string[]) || [],
-    displayName: (data.name as string) || 'Operator',
-    pronouns: (data.pronouns as string) ?? null,
+    nodes: withPositions([...SEED_NODES]),
+    edges: SEED_EDGES.map((e) => ({ ...e, type: e.type ?? 'related_to', weight: e.weight ?? 1 })),
   };
 }
 
-function inferGenSync(commPref?: string, techComfort?: number): string {
-  if (techComfort != null && techComfort >= 8) return 'TECHNICAL';
-  if (commPref === 'Text/chat (async)') return 'TECHNICAL';
-  if (commPref === 'Voice call' || commPref === 'Video call') return 'EMPATHIC';
-  if (commPref === 'Email (formal async)') return 'EXECUTIVE';
-  return 'PLAIN';
-}
-
-function estimateEntropy(data: Record<string, unknown>): number {
-  let entropy = 0.2;
-  const stressors = data.stressors;
-  if (Array.isArray(stressors)) {
-    if (stressors.includes('None currently')) return 0.15;
-    entropy += stressors.length * 0.08;
-  }
-  if (typeof data.support_level === 'number' && data.support_level < 5) {
-    entropy += (5 - data.support_level) * 0.05;
-  }
-  if (typeof data.sleep_quality === 'number' && data.sleep_quality < 5) {
-    entropy += (5 - data.sleep_quality) * 0.04;
-  }
-  return Math.min(entropy, 1);
+export function addNodeToGraph(graph: Graph, node: GraphNode, connectTo?: string): Graph {
+  const nodes = [...graph.nodes, node];
+  const edges = connectTo
+    ? [...graph.edges, { source: node.id, target: connectTo, type: 'related_to' }]
+    : [...graph.edges];
+  return { nodes, edges };
 }

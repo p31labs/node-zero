@@ -1,68 +1,73 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+// @vitest-environment jsdom
+import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import 'fake-indexeddb/auto';
-
-// Mock connection-manager to avoid real fetch calls
-vi.mock('../lib/connection-manager', () => ({
-  connectionManager: {
-    connectWeb3: vi.fn().mockResolvedValue(false),
-    getService: vi.fn(),
-  },
-}));
-
+import { persistence } from '../lib/persistence';
 import { useOnboarding } from './useOnboarding';
-import { onboardingDb } from '../lib/onboarding-store';
 
 describe('useOnboarding', () => {
-  beforeEach(async () => {
-    await onboardingDb.onboarding.clear();
-    vi.clearAllMocks();
+  beforeEach(() => {
+    persistence.clear();
   });
 
-  it('starts in loading phase', () => {
+  it('exposes gate, sensory, initialSpoons, name, isComplete', () => {
     const { result } = renderHook(() => useOnboarding());
-    expect(result.current.phase).toBe('loading');
+    expect(typeof result.current.gate).toBe('number');
+    expect(result.current.sensory).toBeDefined();
+    expect(typeof result.current.initialSpoons).toBe('number');
+    expect(typeof result.current.name).toBe('string');
+    expect(typeof result.current.isComplete).toBe('boolean');
   });
 
-  it('transitions to wallet phase when no completed onboarding', async () => {
+  it('starts at gate 0 when no calibration saved', () => {
     const { result } = renderHook(() => useOnboarding());
-    // Wait for async check
-    await act(async () => { await new Promise(r => setTimeout(r, 100)); });
-    expect(result.current.phase).toBe('wallet');
+    expect(result.current.gate).toBe(0);
+    expect(result.current.isComplete).toBe(false);
   });
 
-  it('updateField adds data and recomputes liveGraph', async () => {
+  it('advance moves through gates and persists at gate 4', () => {
     const { result } = renderHook(() => useOnboarding());
-    await act(async () => { await new Promise(r => setTimeout(r, 100)); });
-
-    act(() => { result.current.updateField('name', 'Will'); });
-    expect(result.current.intakeData.name).toBe('Will');
-    expect(result.current.liveGraph.nodes.length).toBeGreaterThan(0);
+    expect(result.current.gate).toBe(0);
+    act(() => { result.current.advance(); });
+    expect(result.current.gate).toBe(1);
+    act(() => { result.current.advance(); });
+    expect(result.current.gate).toBe(2);
+    act(() => { result.current.advance(); });
+    expect(result.current.gate).toBe(3);
+    act(() => { result.current.advance(); });
+    expect(result.current.gate).toBe(4);
+    expect(result.current.isComplete).toBe(true);
+    expect(persistence.get('calibration', null)).not.toBeNull();
   });
 
-  it('liveGraph has correct node for answered field', async () => {
+  it('setSensory and setInitialSpoons and setName update state', () => {
     const { result } = renderHook(() => useOnboarding());
-    await act(async () => { await new Promise(r => setTimeout(r, 100)); });
-
-    act(() => { result.current.updateField('energy_baseline', 6); });
-    const node = result.current.liveGraph.nodes.find(n => n.id === 'intake:energy_baseline');
-    expect(node).toBeDefined();
-    expect(node!.axis).toBe('B');
+    act(() => { result.current.setSensory({ ...result.current.sensory, motionScale: 0.5 }); });
+    expect(result.current.sensory.motionScale).toBe(0.5);
+    act(() => { result.current.setInitialSpoons(10); });
+    expect(result.current.initialSpoons).toBe(10);
+    act(() => { result.current.setName('Op'); });
+    expect(result.current.name).toBe('Op');
   });
 
-  it('calibration reflects current answers', async () => {
+  it('reset clears calibration and returns to gate 0', () => {
     const { result } = renderHook(() => useOnboarding());
-    await act(async () => { await new Promise(r => setTimeout(r, 100)); });
-
-    act(() => { result.current.updateField('energy_baseline', 5); });
-    expect(result.current.calibration.initialSpoons).toBe(5);
+    act(() => { result.current.advance(); result.current.advance(); result.current.advance(); result.current.advance(); });
+    expect(result.current.isComplete).toBe(true);
+    act(() => { result.current.reset(); });
+    expect(result.current.gate).toBe(0);
+    expect(result.current.isComplete).toBe(false);
+    expect(persistence.get('calibration', null)).toBeNull();
   });
 
-  it('skipWallet transitions to intake phase', async () => {
+  it('when calibration is saved, starts at gate 4', () => {
+    persistence.set('calibration', {
+      sensory: { motionScale: 0.7, glowIntensity: 0.6, soundEnabled: false, hapticEnabled: false },
+      initialSpoons: 8,
+      name: 'Test',
+      completedAt: new Date().toISOString(),
+    });
     const { result } = renderHook(() => useOnboarding());
-    await act(async () => { await new Promise(r => setTimeout(r, 100)); });
-
-    act(() => { result.current.skipWallet(); });
-    expect(result.current.phase).toBe('intake');
+    expect(result.current.gate).toBe(4);
+    expect(result.current.isComplete).toBe(true);
   });
 });

@@ -21,6 +21,7 @@ export const COLORS = {
     base: '#f9fafb',
     deep: '#111827',
     border: '#e5e7eb',
+    surface: '#f3f4f6',
   },
   accent: {
     primary: '#3b82f6',
@@ -30,6 +31,13 @@ export const COLORS = {
     B: '#3b82f6',
     C: '#eab308',
     D: '#f97316',
+  },
+  /** IVM node orbs: Identity / Health / Environment / Technical (r128 single-mesh colors) */
+  ivmNode: {
+    A: '#ff6b6b',
+    B: '#4ecdc4',
+    C: '#ffe66d',
+    D: '#a29bfe',
   },
   tier: {
     FULL: '#22c55e',
