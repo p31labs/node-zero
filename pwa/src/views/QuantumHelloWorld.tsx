@@ -9,6 +9,7 @@ import { WebCryptoIdentityProvider } from "@p31/node-zero";
 import { LedgerEngine } from "@p31/love-ledger";
 import { GameEngine, SEED_CHALLENGES } from "@p31/game-engine";
 import { useSession } from "../context/SessionContext";
+import { SkinSwitcher } from "../components/SkinSwitcher";
 
 const PHASES = ["VOID", "CONVERSE", "COVENANT", "FORMING", "BORN", "ALIVE"];
 
@@ -361,8 +362,8 @@ export function QuantumHelloWorld() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#000",
-        color: "#e2e8f0",
+        background: "var(--skin-bg)",
+        color: "var(--skin-fg)",
         fontFamily: "'Source Serif 4', Georgia, serif",
         display: "flex",
         flexDirection: "column",
@@ -370,7 +371,7 @@ export function QuantumHelloWorld() {
         justifyContent: phase <= 1 ? "center" : "flex-start",
         padding: "40px 20px",
         opacity: fadeIn ? 1 : 0,
-        transition: "opacity 0.8s ease",
+        transition: "opacity 0.8s ease, background 0.4s ease, color 0.4s ease",
       }}
     >
       <style>{`
@@ -378,20 +379,22 @@ export function QuantumHelloWorld() {
         @keyframes glow { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
         @keyframes slideup { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         input::placeholder { color: #444; }
-        input:focus { outline: none; border-color: #31ffa3 !important; }
+        input:focus { outline: none; border-color: var(--skin-primary) !important; }
         * { box-sizing: border-box; }
       `}</style>
+      <SkinSwitcher />
 
       {phaseName === "VOID" && (
         <div style={{ textAlign: "center" }}>
-          <TetrahedronSVG size={160} pulse glow color="#31ffa360" />
+          <TetrahedronSVG size={160} pulse glow color="var(--skin-primary)" />
           <div
             style={{
               fontFamily: "'DM Mono', monospace",
               fontSize: 12,
-              color: "#31ffa360",
+              color: "var(--skin-primary)",
               letterSpacing: 6,
               marginTop: 16,
+              opacity: 0.6,
               animation: "glow 3s ease-in-out infinite",
             }}
           >
@@ -403,7 +406,7 @@ export function QuantumHelloWorld() {
       {phaseName === "CONVERSE" && (
         <div style={{ maxWidth: 520, width: "100%" }}>
           <div style={{ textAlign: "center", marginBottom: 20 }}>
-            <TetrahedronSVG size={80} pulse glow color="#31ffa3" />
+            <TetrahedronSVG size={80} pulse glow color="var(--skin-primary)" />
           </div>
           <CoherenceBar value={coherence} />
           <div
@@ -448,10 +451,10 @@ export function QuantumHelloWorld() {
               style={{
                 flex: 1,
                 padding: "10px 14px",
-                background: "#0d1117",
-                border: "1px solid #1a1a2e",
+                background: "var(--skin-surface)",
+                border: "1px solid var(--skin-border)",
                 borderRadius: 8,
-                color: "#e2e8f0",
+                color: "var(--skin-fg)",
                 fontFamily: "'DM Mono', monospace",
                 fontSize: 13,
               }}
@@ -460,10 +463,10 @@ export function QuantumHelloWorld() {
               onClick={sendMessage}
               style={{
                 padding: "10px 20px",
-                background: "#31ffa320",
-                border: "1px solid #31ffa340",
+                background: "color-mix(in srgb, var(--skin-primary) 12%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--skin-primary) 25%, transparent)",
                 borderRadius: 8,
-                color: "#31ffa3",
+                color: "var(--skin-primary)",
                 fontFamily: "'DM Mono', monospace",
                 fontSize: 13,
                 cursor: "pointer",
